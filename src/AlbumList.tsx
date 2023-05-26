@@ -10,6 +10,7 @@ const AlbumList = (props: Props) => {
   const { albums } = props;
   return (
     <div className="album-list">
+      <h1>アルバムリストです。</h1>
       {albums.map((album) => (
         <div className="album" key={album.id}>
           <img src={album.thumbnailUrl} alt={album.title} />
