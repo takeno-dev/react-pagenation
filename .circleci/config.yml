@@ -31,18 +31,18 @@ jobs:
           to: $BUCKET_URL
       - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_PRD --path "/*"
 
-  deploy_dev:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/node:14
-    resource_class: medium
-    steps:
-      - attach_workspace:
-          at: .
-      - aws-s3/sync:
-          from: ./dist
-          to: $BUCKET_URL
-      - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_DEV --path "/*"
+  #deploy_dev:
+  #  working_directory: ~/repo
+  #  docker:
+  #    - image: circleci/node:14
+  #  resource_class: medium
+  #  steps:
+  #    - attach_workspace:
+  #        at: .
+  #    - aws-s3/sync:
+  #        from: ./dist
+  #        to: $BUCKET_URL
+  #    - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_DEV --path "/*"
 
 workflows:
   version: 2
@@ -56,9 +56,9 @@ workflows:
             branches:
               only: main
 
-      - deploy_dev:
-          requires:
-            - build
-          filters:
-            branches:
-              only: develop
+      #- deploy_dev:
+      #    requires:
+      #      - build
+      #    filters:
+      #      branches:
+      #        only: develop
