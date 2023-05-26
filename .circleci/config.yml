@@ -1,6 +1,6 @@
 version: 2.1
 
-orbs:
+orbs: 
   aws-s3: circleci/aws-s3@3.0.0
 
 jobs:
@@ -12,11 +12,11 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - run: npm install # npmパッケージインストール
-      - run: npm run build # ソースビルド実行
+      - run: npm install   # npmパッケージインストール
+      - run: npm run build  # ソースビルド実行
       - persist_to_workspace:
           root: .
-          paths: ["*"]
+          paths: [ '*' ]
 
   deploy_prod:
     working_directory: ~/repo
@@ -24,26 +24,26 @@ jobs:
       - image: circleci/node:14
     resource_class: medium
     steps:
-      - attach_workspace:
+      - attach_workspace: 
           at: .
-      - aws-s3/sync:
-          from: ./dist
+      - aws-s3/sync: 
+          from: ./build
           to: $BUCKET_URL
       - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_PRD --path "/*"
-
-  #deploy_dev:
-  #  working_directory: ~/repo
-  #  docker:
-  #    - image: circleci/node:14
-  #  resource_class: medium
-  #  steps:
-  #    - attach_workspace:
-  #        at: .
-  #    - aws-s3/sync:
-  #        from: ./dist
-  #        to: $BUCKET_URL
-  #    - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_DEV --path "/*"
-
+      
+  deploy_dev:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:14
+    resource_class: medium
+    steps:
+      - attach_workspace: 
+          at: .
+      - aws-s3/sync: 
+          from: ./build
+          to: $BUCKET_URL
+      - run: aws cloudfront create-invalidation --distribution-id $CF_DIS_DEV --path "/*"
+      
 workflows:
   version: 2
   s3-deploy:
@@ -56,9 +56,9 @@ workflows:
             branches:
               only: main
 
-      #- deploy_dev:
-      #    requires:
-      #      - build
-      #    filters:
-      #      branches:
-      #        only: develop
+      - deploy_dev:
+          requires:
+            - build
+          filters:
+            branches:
+              only: develop
